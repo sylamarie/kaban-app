@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#E8EBEE" />
+<meta name="description" content="Kaban — household money, in one place." />
+<title>Kaban</title>
+
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="apple-touch-icon" href="icon-180.png" />
+<link rel="icon" href="icon-180.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Kaban" />
+
+<style>
+  html, body { height: 100%; margin: 0; background: #E8EBEE; }
+  body { -webkit-text-size-adjust: 100%; overscroll-behavior-y: none; }
+  #root { min-height: 100%; }
+  #boot {
+    min-height: 100vh; display: grid; place-items: center; gap: 10px;
+    font: 500 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    color: #4A555E; text-align: center; padding: 24px;
+  }
+  #boot .m { width: 30px; height: 30px; border-radius: 8px; background: #16324B; margin: 0 auto 4px; }
+</style>
+</head>
+<body>
+<div id="root"><div id="boot"><div><div class="m"></div>Kaban<br /><span style="color:#7C868E">Loading…</span></div></div></div>
+<noscript><div id="boot">Kaban needs JavaScript enabled.</div></noscript>
+
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone@7.28.5/babel.min.js" crossorigin></script>
+
+<script type="text/babel" data-presets="react" src="app.jsx"></script>
+
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js").catch(function () {});
+    });
+  }
+</script>
+</body>
+</html>
