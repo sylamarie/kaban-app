@@ -1,5 +1,8 @@
 # Kaban
 
+See [TECH-STACK.md](TECH-STACK.md) for the application architecture,
+technology choices, data flow, and security boundaries.
+
 Household money, in one place. A single-page budgeting app for one family, built to run from a static host and install on an iPad like a native app.
 
 No build step. No `npm install`. `index.html` loads `app.jsx`, and the browser transpiles it.
