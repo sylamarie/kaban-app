@@ -214,6 +214,14 @@ button.kbn-member-row{min-height:72px;padding:16px 20px;}
 .kbn-btn[disabled]{background:var(--card-3);color:var(--ink-4);cursor:default;}
 .kbn-btn.ghost{background:var(--card);border:1px solid var(--hair);color:var(--ink);}
 .kbn-btn.ghost:hover{background:var(--card-2);}
+.kbn-authintro{padding:26px 22px 20px;text-align:center;border-bottom:1px solid var(--hair-2);}
+.kbn-authintro .kbn-mark{margin:0 auto 14px;width:42px;height:42px;border-radius:11px;}
+.kbn-authintro h1{font:700 24px/1.2 var(--disp);letter-spacing:-.025em;margin:0;}
+.kbn-authintro p{max-width:310px;margin:9px auto 0;color:var(--ink-2);font-size:13px;line-height:1.6;}
+.kbn-authbody{padding:22px 20px;}
+.kbn-authdivider{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--ink-4);font-size:11px;}
+.kbn-authdivider::before,.kbn-authdivider::after{content:"";height:1px;background:var(--hair);flex:1;}
+.kbn-account-email{overflow-wrap:anywhere;}
 
 /* ---------- sheet ---------- */
 .kbn-scrim{position:absolute;inset:0;background:rgba(11,17,20,.44);z-index:40;animation:kfade .2s ease;}
@@ -281,6 +289,8 @@ button.kbn-member-row{min-height:72px;padding:16px 20px;}
   .kbn-sheethead{padding:14px 24px 17px;}
   .kbn-sheetbody{padding:24px;}
   .kbn-sheetfoot{padding:16px 24px calc(16px + env(safe-area-inset-bottom));}
+  .kbn-authstage{justify-content:center;}
+  .kbn-authstage .kbn-device{max-width:430px;height:min(720px,calc(100dvh - 32px));min-height:640px;}
 }
 @media (min-width:1025px){
   .kbn-stage{min-height:100dvh;padding:0;gap:0;background:var(--card);}
@@ -329,6 +339,12 @@ button.kbn-member-row{min-height:72px;padding:16px 20px;}
   .kbn-sheethead{padding:14px 24px 17px;}
   .kbn-sheetbody{padding:24px;}
   .kbn-sheetfoot{padding:16px 24px;}
+  .kbn-authstage{padding:32px;background:
+    radial-gradient(140% 90% at 50% -10%,#F3F5F7 0%,var(--canvas) 60%,#DFE3E7 100%);}
+  .kbn-authstage .kbn-device{
+    max-width:430px;height:min(720px,calc(100dvh - 64px));min-height:640px;
+    border:1px solid #D3DAE0;border-radius:26px;box-shadow:0 30px 64px -34px rgba(11,17,20,.5),0 2px 4px rgba(11,17,20,.05);
+  }
 }
 @media (max-width:480px){
   .kbn-stage{min-height:100dvh;padding:0;gap:0;background:var(--card);}
@@ -742,7 +758,7 @@ const Notice = ({ tone = "", icon = "alert", title, body, action, onAction }) =>
 
 /* ================================== APP ================================== */
 
-function Kaban({ boot, onWipe }) {
+function Kaban({ boot, onWipe, onSignOut }) {
   const [data, setData] = useState(boot);
   const [mi, setMi] = useState(() => boot.months.length - 1);
   PEOPLE = data.people;
@@ -931,6 +947,7 @@ function Kaban({ boot, onWipe }) {
     },
     replaceAll(next) { setData(next); setSheet(null); say("Backup restored."); },
     wipe() { if (onWipe) onWipe(); },
+    signOut() { if (onSignOut) onSignOut(); },
     undo(prev) { setData(prev); setToast(null); say("Change undone."); },
   };
 
@@ -964,6 +981,10 @@ function Kaban({ boot, onWipe }) {
               </div>
             </div>
             <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+              <button className="kbn-iconbtn" onClick={() => setSheet({ type: "settings", tab: "cloud" })}
+                aria-label={SB.email ? "Account, signed in as " + SB.email : "Account and cloud sync"}>
+                <Ic n="people" s={16} />
+              </button>
               <button className="kbn-iconbtn" disabled={idx === 0} onClick={() => setMi(idx - 1)} aria-label="Previous month"><Ic n="left" s={15} /></button>
               <button className="kbn-monthbtn" onClick={() => setSheet({ type: "months" })}>
                 {monthShort(key)} {key.slice(0, 4)} <Ic n="down" s={13} />
@@ -2363,12 +2384,18 @@ const SB = {
   async signIn(email) {
     if (!this.client) throw new Error("Not connected");
     const { error } = await this.client.auth.signInWithOtp({
-      email, options: { emailRedirectTo: window.location.href.split("#")[0] },
+      email, options: {
+        emailRedirectTo: window.location.origin + window.location.pathname,
+        shouldCreateUser: true,
+      },
     });
     if (error) throw error;
   },
   async signOut() {
-    if (this.client) await this.client.auth.signOut();
+    if (this.client) {
+      const { error } = await this.client.auth.signOut({ scope: "local" });
+      if (error) throw error;
+    }
     this.email = null;
   },
   async pull() {
@@ -2469,7 +2496,9 @@ function Setup({ onDone }) {
             </button>
 
             <div style={{ marginTop: 18 }}>
-              <Notice icon="shield" body="Everything is stored on this device until you turn on cloud sync in Settings. Nothing is sent anywhere." />
+              <Notice icon={SB.email ? "check" : "shield"} body={SB.email
+                ? "Signed in as " + SB.email + ". Your household will save to the cloud automatically."
+                : "Everything is stored on this device until you sign in. Nothing is sent anywhere."} />
             </div>
 
             <button className="kbn-btn" style={{ marginTop: 16 }} disabled={!ok}
@@ -2497,7 +2526,7 @@ function SettingsSheet({ ctx }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState(SB.email ? "in:" + SB.email : "");
   const [busy, setBusy] = useState(false);
-  const [tab, setTab] = useState("household");
+  const [tab, setTab] = useState(ctx.sheet.tab || "household");
 
   const exportFile = () => {
     const blob = new Blob([JSON.stringify({ app: "kaban", v: 1, exportedAt: new Date().toISOString(), data }, null, 2)],
@@ -2616,18 +2645,23 @@ function SettingsSheet({ ctx }) {
 
           {status && status.indexOf("in:") === 0 ? (
             <div style={{ marginTop: 16 }}>
-              <Notice icon="check" title="Signed in" body={status.slice(3) + " · changes save to the cloud automatically."} />
+              <Notice icon="check" title="Signed in"
+                body={<span className="kbn-account-email">{status.slice(3)} · changes save to the cloud automatically.</span>} />
               <button className="kbn-btn ghost" style={{ marginTop: 12 }}
-                onClick={async () => { await SB.signOut(); setStatus(""); }}>Sign out</button>
+                onClick={async () => {
+                  setBusy(true);
+                  try { await SB.signOut(); A.signOut(); }
+                  catch (e) { setStatus("err:" + e.message); setBusy(false); }
+                }}>Sign out on this device</button>
             </div>
           ) : (
             <div style={{ marginTop: 16 }}>
-              <Field label="Sign in with a link" hint="Supabase emails you a link. Open it on this device.">
+              <Field label="Sign in or create an account" hint="We email you a secure link. Open it on this device—no password needed.">
                 <input className="kbn-in" type="email" value={email} placeholder="you@example.com"
                   onChange={(e) => setEmail(e.target.value)} />
               </Field>
               <button className="kbn-btn" disabled={busy || !email.trim() || !SB.client} onClick={sendLink}>
-                {busy ? "Sending…" : "Email me a sign-in link"}
+                {busy ? "Sending…" : "Continue with email"}
               </button>
               {!SB.client && <div className="kbn-m" style={{ marginTop: 8 }}>Connect the project first.</div>}
             </div>
@@ -2692,9 +2726,60 @@ function Splash() {
   );
 }
 
+function AccountStart({ onOffline }) {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("");
+  const [busy, setBusy] = useState(false);
+  const send = async () => {
+    setBusy(true); setStatus("");
+    try {
+      await SB.signIn(email.trim());
+      setStatus("sent");
+    } catch (e) { setStatus("err:" + e.message); }
+    setBusy(false);
+  };
+  return (
+    <div className="kbn">
+      <style>{CSS}</style>
+      <div className="kbn-stage kbn-authstage">
+        <div className="kbn-lockup">
+          <div className="kbn-mark" aria-hidden="true" /><div className="kbn-word">Kaban</div>
+          <div className="kbn-rule" /><div className="kbn-claim">Household money, in one place</div>
+        </div>
+        <div className="kbn-device">
+          <div className="kbn-authintro">
+            <div className="kbn-mark" aria-hidden="true" />
+            <h1>Your money, on every device</h1>
+            <p>Sign in with your email to securely save and restore your household budget on your phone, tablet, or computer.</p>
+          </div>
+          <main className="kbn-authbody">
+            <Field label="Email address">
+              <input className="kbn-in" type="email" autoComplete="email" value={email}
+                placeholder="you@example.com" onChange={(e) => setEmail(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter" && email.trim() && !busy) send(); }} />
+            </Field>
+            <button className="kbn-btn" disabled={busy || !email.trim()} onClick={send}>
+              {busy ? "Sending secure link…" : "Sign in or create account"}
+            </button>
+            {status === "sent" && <div style={{ marginTop: 14 }}><Notice icon="check" title="Check your email"
+              body="Open the link we sent on this device. Kaban will sign you in and restore your saved records." /></div>}
+            {status.indexOf("err:") === 0 && <div style={{ marginTop: 14 }}><Notice tone="neg" body={status.slice(4)} /></div>}
+            <div className="kbn-authdivider">or</div>
+            <button className="kbn-btn ghost" onClick={onOffline}>Continue on this device only</button>
+            <div className="kbn-m" style={{ marginTop: 10, textAlign: "center", lineHeight: 1.6 }}>
+              You can sign in later from the account button. No password is required.
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Root() {
   const [boot, setBoot] = useState(null);
   const [ready, setReady] = useState(false);
+  const [offline, setOffline] = useState(false);
 
   useEffect(() => {
     let live = true;
@@ -2717,8 +2802,11 @@ function Root() {
   }, []);
 
   if (!ready) return <Splash />;
+  if (!boot && !SB.email && !offline) return <AccountStart onOffline={() => setOffline(true)} />;
   if (!boot) return <Setup onDone={(d) => { writeLocal(d); setBoot(d); }} />;
-  return <Kaban key="app" boot={boot} onWipe={() => { clearLocal(); setBoot(null); }} />;
+  return <Kaban key="app" boot={boot}
+    onWipe={() => { clearLocal(); setBoot(null); setOffline(true); }}
+    onSignOut={() => { clearLocal(); setBoot(null); setOffline(false); }} />;
 }
 
 ReactDOM.createRoot(document.getElementById("root")).render(<Root />);

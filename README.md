@@ -94,17 +94,20 @@ read or written.
 
 Only worth it if you want the same records on an iPad *and* a phone, or another family member entering expenses. One device is fine without it.
 
-### Set it up
+### Sign in on a device
 
-1. Create a free project at [supabase.com](https://supabase.com)
-2. **SQL Editor** → paste `supabase-schema.sql` → **Run**
-3. **Authentication → Providers** → make sure **Email** is enabled
-4. **Authentication → URL Configuration** → add your GitHub Pages URL to *Redirect URLs*
-5. **Project Settings → API Keys** → copy the **Project URL** and a **publishable** (`sb_publishable_...`) key
-6. In Kaban: **More → Backup and settings → Sync** → paste both → **Connect** → enter your email → **Email me a sign-in link**
-7. Open the link on that device
+1. Open Kaban and enter your email on the welcome screen.
+2. Select **Sign in or create account**. The same action creates the account when the email is new.
+3. Open the secure link from your email on that device.
 
-Repeat step 6–7 on each device, signing in with the same email.
+Repeat these steps on each device using the same email. Kaban restores the
+cloud copy automatically. Use the account button in the app header to see the
+signed-in email or to sign out of the current device.
+
+For a new self-hosted copy, first create a Supabase project, run
+`supabase-schema.sql`, enable the Email provider, add the deployed URL under
+**Authentication → URL Configuration**, and place only the project URL and
+publishable key in `CLOUD_DEFAULT`.
 
 ### About that key in a public file
 
