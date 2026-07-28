@@ -281,6 +281,47 @@ button.kbn-member-row{min-height:72px;padding:16px 20px;}
   .kbn-sheetbody{padding:24px;}
   .kbn-sheetfoot{padding:16px 24px calc(16px + env(safe-area-inset-bottom));}
 }
+@media (min-width:1025px){
+  .kbn-stage{min-height:100dvh;padding:24px;gap:0;}
+  .kbn-stage > .kbn-lockup,.kbn-stage > .kbn-note{display:none;}
+  .kbn-device{
+    max-width:1200px;height:calc(100dvh - 48px);min-height:720px;border-radius:22px;
+  }
+  .kbn-bar{margin-left:96px;padding:18px 32px 16px;min-height:72px;}
+  .kbn-scroll{margin-left:96px;padding:28px 32px 112px;}
+  .kbn-tabs{
+    top:0;bottom:0;left:0;right:auto;width:96px;display:flex;flex-direction:column;
+    justify-content:center;gap:8px;padding:24px 10px;border-top:0;border-right:1px solid var(--hair);
+    background:var(--card);
+  }
+  .kbn-tab{
+    width:100%;min-height:64px;padding:10px 4px;border-radius:12px;justify-content:center;
+    color:var(--ink-3);
+  }
+  .kbn-tab:hover{background:var(--card-2);color:var(--brand);}
+  .kbn-tab[data-on="1"]{background:var(--brand-tint);}
+  .kbn-tab span{font-size:10.5px;}
+  button.kbn-fab{right:32px;bottom:28px;height:50px;padding:0 20px;}
+  .kbn-overview{
+    display:grid;grid-template-columns:minmax(0,1.2fr) minmax(340px,.8fr);
+    gap:28px;align-items:start;
+  }
+  .kbn-overview > .kbn-sec{margin-top:0;}
+  .kbn-overview-balance{grid-column:1;grid-row:1 / span 2;}
+  .kbn-overview-notice{grid-column:2;margin-top:0 !important;}
+  .kbn-overview-alerts{grid-column:2;}
+  .kbn-overview-budgets{grid-column:1;}
+  .kbn-overview-members{grid-column:2;}
+  .kbn-overview-activity{grid-column:1 / -1;}
+  .kbn-pad{padding:20px;}
+  .kbn-row,button.kbn-row{padding:16px 20px;}
+  button.kbn-member-row{padding:18px 22px;}
+  .kbn-member-row .kbn-rowend{width:128px;min-width:128px;}
+  .kbn-sheet{left:116px;right:24px;top:24px;border-radius:20px 20px 0 0;}
+  .kbn-sheethead{padding:14px 24px 17px;}
+  .kbn-sheetbody{padding:24px;}
+  .kbn-sheetfoot{padding:16px 24px;}
+}
 @media (max-width:480px){
   .kbn-stage{min-height:100dvh;padding:0;gap:0;background:var(--card);}
   .kbn-stage > .kbn-lockup,.kbn-stage > .kbn-note{display:none;}
@@ -979,8 +1020,8 @@ function Overview({ ctx }) {
   const recent = feed(data, key).slice(0, 5);
 
   return (
-    <>
-      <section className="kbn-card kbn-pad">
+    <div className="kbn-overview">
+      <section className="kbn-card kbn-pad kbn-overview-balance">
         <div className="kbn-eyebrow">Available balance</div>
         <div className="kbn-n" style={{ fontSize: 34, marginTop: 3, lineHeight: 1.1 }}>{peso(m.available)}</div>
         <div className="kbn-m" style={{ marginTop: 3 }}>
@@ -992,14 +1033,14 @@ function Overview({ ctx }) {
       </section>
 
       {m.income.length === 0 && expected > 0 && (
-        <div style={{ marginTop: 14 }}>
+        <div className="kbn-overview-notice" style={{ marginTop: 14 }}>
           <Notice tone="info" icon="calendar" title="Recurring income scheduled"
             body={`${peso(expected)} is expected this month from 2 recurring sources. Nothing has been received yet.`} />
         </div>
       )}
 
       {closable && (
-        <div style={{ marginTop: 14 }}>
+        <div className="kbn-overview-notice" style={{ marginTop: 14 }}>
           <Notice tone="info" icon="calendar" title={`${daysIn(key) - Number(TODAY.slice(8, 10))} days left in ${monthShort(key)}`}
             body={`${peso(m.unspentInBudgets)} is still sitting unspent in budgets. Decide where it goes before the month rolls over.`}
             action="Review and close the month" onAction={() => setSheet({ type: "review" })} />
@@ -1007,7 +1048,7 @@ function Overview({ ctx }) {
       )}
 
       {alerts.length > 0 && (
-        <section className="kbn-sec">
+        <section className="kbn-sec kbn-overview-alerts">
           <div className="kbn-sechead"><div className="kbn-eyebrow">Needs a decision</div></div>
           <div style={{ display: "grid", gap: 9 }}>
             {alerts.map((b) => (
@@ -1020,7 +1061,7 @@ function Overview({ ctx }) {
         </section>
       )}
 
-      <section className="kbn-sec">
+      <section className="kbn-sec kbn-overview-budgets">
         <div className="kbn-sechead">
           <div className="kbn-eyebrow">Budgets</div>
           <button className="kbn-more" onClick={() => A.goto("budgets")}>All {m.rows.length} <Ic n="right" s={12} /></button>
@@ -1049,7 +1090,7 @@ function Overview({ ctx }) {
         )}
       </section>
 
-      <section className="kbn-sec">
+      <section className="kbn-sec kbn-overview-members">
         <div className="kbn-sechead">
           <div className="kbn-eyebrow">Members</div>
           <button className="kbn-more" onClick={() => A.subgoto("people")}>Profiles <Ic n="right" s={12} /></button>
@@ -1077,7 +1118,7 @@ function Overview({ ctx }) {
         </div>
       </section>
 
-      <section className="kbn-sec">
+      <section className="kbn-sec kbn-overview-activity">
         <div className="kbn-sechead">
           <div className="kbn-eyebrow">Recent activity</div>
           <button className="kbn-more" onClick={() => A.goto("activity")}>See all <Ic n="right" s={12} /></button>
@@ -1093,7 +1134,7 @@ function Overview({ ctx }) {
           </div>
         )}
       </section>
-    </>
+    </div>
   );
 }
 
