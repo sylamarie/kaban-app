@@ -1585,6 +1585,7 @@ function Reports({ ctx }) {
 function More({ ctx }) {
   const { A, key, locked, setSheet, month } = ctx;
   const rows = [
+    ["people", "Account", SB.email || "Sign in to sync across devices", () => setSheet({ type: "settings", tab: "cloud" })],
     ["people", "Profiles", "Members, income, and what each has left", () => A.subgoto("people")],
     ["chart", "Reports", "Trends, categories, contributors, comparisons", () => A.subgoto("reports")],
     ["export", "Backup and settings", "Export, restore, members, cloud sync", () => setSheet({ type: "settings" })],
@@ -2461,9 +2462,10 @@ function makeEmpty(householdName, members) {
 
 /* -------------------------------- setup ----------------------------------- */
 
-function Setup({ onDone, onAccount }) {
+function Setup({ onDone, onAccount, onSignOut }) {
   const [name, setName] = useState("");
   const [rows, setRows] = useState([{ name: "", kind: "adult" }, { name: "", kind: "adult" }]);
+  const [authBusy, setAuthBusy] = useState(false);
   const set = (i, k, v) => setRows((r) => r.map((x, n) => (n === i ? { ...x, [k]: v } : x)));
   const ok = rows.some((r) => r.name.trim());
 
@@ -2484,8 +2486,14 @@ function Setup({ onDone, onAccount }) {
               <div className="kbn-bartitle">Set up</div>
               <div className="kbn-barsub">{SB.email ? "Cloud sync is on" : "This stays on your device"}</div>
             </div>
-            {!SB.email && <button className="kbn-btn ghost" style={{ width: "auto", minHeight: 40, padding: "0 14px" }}
-              onClick={onAccount}>Sign in</button>}
+            {SB.email
+              ? <button className="kbn-btn ghost" disabled={authBusy}
+                  style={{ width: "auto", minHeight: 40, padding: "0 14px" }}
+                  onClick={async () => { setAuthBusy(true); await onSignOut(); }}>
+                  {authBusy ? "Signing out…" : "Sign out"}
+                </button>
+              : <button className="kbn-btn ghost" style={{ width: "auto", minHeight: 40, padding: "0 14px" }}
+                  onClick={onAccount}>Sign in</button>}
           </header>
 
           <main className="kbn-scroll" style={{ paddingBottom: 24 }}>
@@ -2843,6 +2851,7 @@ function Root() {
   if (!ready) return <Splash />;
   if (!boot && !SB.email && !offline) return <AccountStart onOffline={() => setOffline(true)} />;
   if (!boot) return <Setup onAccount={() => setOffline(false)}
+    onSignOut={async () => { await SB.signOut(); clearLocal(); setOffline(false); setReady(false); setReady(true); }}
     onDone={(d) => { writeLocal(d); setBoot(d); }} />;
   return <Kaban key="app" boot={boot}
     onWipe={() => { clearLocal(); setBoot(null); setOffline(true); }}
