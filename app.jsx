@@ -339,12 +339,22 @@ button.kbn-member-row{min-height:72px;padding:16px 20px;}
   .kbn-sheethead{padding:14px 24px 17px;}
   .kbn-sheetbody{padding:24px;}
   .kbn-sheetfoot{padding:16px 24px;}
-  .kbn-authstage{padding:32px;background:
+  .kbn-authstage{padding:32px;justify-content:center;background:
     radial-gradient(140% 90% at 50% -10%,#F3F5F7 0%,var(--canvas) 60%,#DFE3E7 100%);}
   .kbn-authstage .kbn-device{
-    max-width:430px;height:min(720px,calc(100dvh - 64px));min-height:640px;
+    max-width:960px;width:min(960px,calc(100vw - 64px));height:600px;min-height:0;
     border:1px solid #D3DAE0;border-radius:26px;box-shadow:0 30px 64px -34px rgba(11,17,20,.5),0 2px 4px rgba(11,17,20,.05);
+    display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
   }
+  .kbn-authintro{
+    display:flex;flex-direction:column;align-items:flex-start;justify-content:center;text-align:left;
+    padding:64px;border-bottom:0;border-right:1px solid var(--hair);
+    background:linear-gradient(145deg,var(--brand-tint),var(--card)); 
+  }
+  .kbn-authintro .kbn-mark{margin:0 0 24px;width:52px;height:52px;border-radius:13px;}
+  .kbn-authintro h1{font-size:34px;max-width:360px;}
+  .kbn-authintro p{margin:14px 0 0;max-width:360px;font-size:14px;}
+  .kbn-authbody{align-self:center;padding:56px 52px;}
 }
 @media (max-width:480px){
   .kbn-stage{min-height:100dvh;padding:0;gap:0;background:var(--card);}
