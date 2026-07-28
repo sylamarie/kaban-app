@@ -1,6 +1,6 @@
 /* Kaban offline cache.
    Bump CACHE when you change index.html so devices pick up the new version. */
-const CACHE = "kaban-v14";
+const CACHE = "kaban-v15";
 const CORE = [
   "./", "./index.html", "./app.jsx", "./manifest.webmanifest", "./icon-180.png", "./icon-512.png",
   "https://unpkg.com/react@18/umd/react.production.min.js",
@@ -34,6 +34,14 @@ self.addEventListener("fetch", function (e) {
     }).catch(function () {
       return caches.match(req).then(function (hit) { return hit || caches.match("./index.html"); });
     }));
+    return;
+  }
+
+  if (url.origin === self.location.origin && url.pathname.endsWith("/app.jsx")) {
+    e.respondWith(fetch(req).then(function (r) {
+      if (r && r.ok) { var copy = r.clone(); caches.open(CACHE).then(function (c) { c.put(req, copy); }); }
+      return r;
+    }).catch(function () { return caches.match(req); }));
     return;
   }
 

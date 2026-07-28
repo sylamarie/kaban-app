@@ -2439,7 +2439,7 @@ function makeEmpty(householdName, members) {
 
 /* -------------------------------- setup ----------------------------------- */
 
-function Setup({ onDone }) {
+function Setup({ onDone, onAccount }) {
   const [name, setName] = useState("");
   const [rows, setRows] = useState([{ name: "", kind: "adult" }, { name: "", kind: "adult" }]);
   const set = (i, k, v) => setRows((r) => r.map((x, n) => (n === i ? { ...x, [k]: v } : x)));
@@ -2460,8 +2460,10 @@ function Setup({ onDone }) {
           <header className="kbn-bar">
             <div>
               <div className="kbn-bartitle">Set up</div>
-              <div className="kbn-barsub">This stays on your device</div>
+              <div className="kbn-barsub">{SB.email ? "Cloud sync is on" : "This stays on your device"}</div>
             </div>
+            {!SB.email && <button className="kbn-btn ghost" style={{ width: "auto", minHeight: 40, padding: "0 14px" }}
+              onClick={onAccount}>Sign in</button>}
           </header>
 
           <main className="kbn-scroll" style={{ paddingBottom: 24 }}>
@@ -2803,7 +2805,8 @@ function Root() {
 
   if (!ready) return <Splash />;
   if (!boot && !SB.email && !offline) return <AccountStart onOffline={() => setOffline(true)} />;
-  if (!boot) return <Setup onDone={(d) => { writeLocal(d); setBoot(d); }} />;
+  if (!boot) return <Setup onAccount={() => setOffline(false)}
+    onDone={(d) => { writeLocal(d); setBoot(d); }} />;
   return <Kaban key="app" boot={boot}
     onWipe={() => { clearLocal(); setBoot(null); setOffline(true); }}
     onSignOut={() => { clearLocal(); setBoot(null); setOffline(false); }} />;
