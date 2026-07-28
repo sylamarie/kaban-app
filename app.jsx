@@ -61,6 +61,7 @@ const CSS = `
 .kbn-note{font-size:11.5px;color:var(--ink-3);text-align:center;max-width:430px;line-height:1.65;margin:0;}
 .kbn-note b{color:var(--ink-2);font-weight:600;}
 .kbn-sidebrand{display:none;}
+.kbn-tabletbrand{display:none;}
 
 /* ---------- device ---------- */
 .kbn-device{
@@ -275,12 +276,15 @@ button.kbn-member-row{min-height:72px;padding:16px 20px;}
 .kbn-toast button{font-size:11.5px;font-weight:700;letter-spacing:.06em;color:#9FC6E4;flex:0 0 auto;}
 
 @media (min-width:481px) and (max-width:1024px){
-  .kbn-stage{min-height:100dvh;padding:16px;gap:16px;}
+  .kbn-stage{min-height:100dvh;padding:0;gap:0;background:var(--card);}
   .kbn-stage > .kbn-lockup,.kbn-stage > .kbn-note{display:none;}
   .kbn-device{
-    max-width:760px;height:calc(100dvh - 32px);min-height:680px;border-radius:22px;
+    max-width:none;height:100dvh;min-height:100dvh;border:0;border-radius:0;box-shadow:none;
   }
   .kbn-bar{padding:18px 28px 16px;}
+  .kbn-tabletbrand{display:flex;align-items:center;gap:9px;padding-right:20px;margin-right:4px;border-right:1px solid var(--hair);}
+  .kbn-tabletbrand .kbn-mark{width:32px;height:32px;border-radius:8px;}
+  .kbn-tabletbrand .kbn-word{font-size:16px;}
   .kbn-scroll{padding:26px 28px 156px;}
   .kbn-pad{padding:20px;}
   .kbn-sec{margin-top:32px;}
@@ -289,12 +293,12 @@ button.kbn-member-row{min-height:72px;padding:16px 20px;}
   button.kbn-member-row{min-height:78px;padding:18px 22px;}
   .kbn-member-row .kbn-rowend{width:128px;min-width:128px;}
   button.kbn-fab{right:28px;bottom:80px;height:50px;padding:0 20px;}
-  .kbn-sheet{left:20px;right:20px;top:28px;border-radius:20px 20px 0 0;}
+  .kbn-sheet{left:0;right:0;top:0;border-radius:0;}
   .kbn-sheethead{padding:14px 24px 17px;}
   .kbn-sheetbody{padding:24px;}
   .kbn-sheetfoot{padding:16px 24px calc(16px + env(safe-area-inset-bottom));}
   .kbn-authstage{justify-content:center;}
-  .kbn-authstage .kbn-device{max-width:430px;height:min(720px,calc(100dvh - 32px));min-height:640px;}
+  .kbn-authstage .kbn-device{max-width:none;height:100dvh;min-height:100dvh;}
 }
 @media (min-width:1025px){
   .kbn-stage{min-height:100dvh;padding:0;gap:0;background:var(--card);}
@@ -988,6 +992,10 @@ function Kaban({ boot, onWipe, onSignOut }) {
             <div className="kbn-word">Kaban</div>
           </div>
           <header className="kbn-bar">
+            <div className="kbn-tabletbrand" aria-label="Kaban">
+              <div className="kbn-mark" aria-hidden="true" />
+              <div className="kbn-word">Kaban</div>
+            </div>
             <div style={{ minWidth: 0 }}>
               <div className="kbn-bartitle">{TITLES[view]}</div>
               <div className="kbn-barsub">
