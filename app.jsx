@@ -261,6 +261,26 @@ button.kbn-member-row{min-height:72px;padding:16px 20px;}
 .kbn-toast > span{flex:1;line-height:1.4;}
 .kbn-toast button{font-size:11.5px;font-weight:700;letter-spacing:.06em;color:#9FC6E4;flex:0 0 auto;}
 
+@media (min-width:481px) and (max-width:1024px){
+  .kbn-stage{min-height:100dvh;padding:16px;gap:16px;}
+  .kbn-stage > .kbn-lockup,.kbn-stage > .kbn-note{display:none;}
+  .kbn-device{
+    max-width:760px;height:calc(100dvh - 32px);min-height:680px;border-radius:22px;
+  }
+  .kbn-bar{padding:18px 28px 16px;}
+  .kbn-scroll{padding:26px 28px 156px;}
+  .kbn-pad{padding:20px;}
+  .kbn-sec{margin-top:32px;}
+  .kbn-sechead{margin-bottom:14px;}
+  .kbn-row,button.kbn-row{padding:16px 20px;}
+  button.kbn-member-row{min-height:78px;padding:18px 22px;}
+  .kbn-member-row .kbn-rowend{width:128px;min-width:128px;}
+  button.kbn-fab{right:28px;bottom:80px;height:50px;padding:0 20px;}
+  .kbn-sheet{left:20px;right:20px;top:28px;border-radius:20px 20px 0 0;}
+  .kbn-sheethead{padding:14px 24px 17px;}
+  .kbn-sheetbody{padding:24px;}
+  .kbn-sheetfoot{padding:16px 24px calc(16px + env(safe-area-inset-bottom));}
+}
 @media (max-width:480px){
   .kbn-stage{min-height:100dvh;padding:0;gap:0;background:var(--card);}
   .kbn-stage > .kbn-lockup,.kbn-stage > .kbn-note{display:none;}
