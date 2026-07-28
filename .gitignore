@@ -9,3 +9,6 @@ kaban-backup-*.json
 Thumbs.db
 .vscode/
 .idea/
+
+# Local visual QA captures
+/spacing-*.png
