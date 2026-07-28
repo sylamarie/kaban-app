@@ -88,7 +88,7 @@ const CSS = `
 .kbn-iconbtn[disabled]{opacity:.35;cursor:default;}
 
 /* ---------- scroll ---------- */
-.kbn-scroll{flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain;padding:20px 20px 112px;}
+.kbn-scroll{flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain;padding:20px 20px 144px;}
 .kbn-scroll::-webkit-scrollbar{width:0;}
 
 /* ---------- tabs ---------- */
@@ -101,13 +101,14 @@ const CSS = `
 .kbn-tab span{font-size:9.5px;font-weight:500;letter-spacing:.01em;}
 .kbn-tab[data-on="1"]{color:var(--brand);}
 .kbn-tab[data-on="1"] span{font-weight:600;}
-.kbn-fab{
-  position:absolute;right:16px;bottom:78px;height:44px;padding:0 16px;border-radius:12px;
-  background:var(--brand);color:#fff;display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;
-  box-shadow:0 10px 22px -10px rgba(22,50,75,.75);
+button.kbn-fab{
+  position:absolute;right:18px;bottom:76px;height:48px;min-width:86px;padding:0 18px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.18);background:var(--brand);color:#fff;
+  display:flex;align-items:center;justify-content:center;gap:8px;font-size:13.5px;font-weight:600;
+  box-shadow:0 12px 28px -12px rgba(22,50,75,.8),0 3px 8px rgba(11,17,20,.12);
 }
-.kbn-fab:hover{background:var(--brand-2);}
-.kbn-fab[disabled]{background:var(--ink-4);box-shadow:none;cursor:default;}
+button.kbn-fab:hover{background:var(--brand-2);transform:translateY(-1px);}
+button.kbn-fab[disabled]{background:var(--ink-4);box-shadow:none;cursor:default;transform:none;}
 
 /* ---------- type ---------- */
 .kbn-eyebrow{font-size:10.5px;font-weight:600;letter-spacing:.085em;text-transform:uppercase;color:var(--ink-3);}
@@ -153,6 +154,11 @@ button.kbn-row:hover{background:var(--card-2);}
 .kbn-rowmain{flex:1 1 auto;min-width:0;}
 .kbn-rowmain .kbn-t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .kbn-rowend{text-align:right;flex:0 0 auto;}
+.kbn-member-row{min-height:68px;padding:14px 18px;}
+.kbn-member-row .kbn-rowmain{padding-right:8px;}
+.kbn-member-row .kbn-rowend{width:104px;min-width:104px;}
+.kbn-member-row .kbn-rowend .kbn-n{line-height:1.25;}
+.kbn-activity-empty{padding:18px 20px;text-align:center;}
 .kbn-av{
   width:28px;height:28px;border-radius:8px;flex:0 0 auto;display:grid;place-items:center;
   font-size:11px;font-weight:600;color:#fff;font-family:var(--disp);
@@ -261,9 +267,12 @@ button.kbn-row:hover{background:var(--card-2);}
     max-width:none;height:100dvh;min-height:100dvh;border:0;border-radius:0;box-shadow:none;
   }
   .kbn-bar{padding:calc(14px + env(safe-area-inset-top)) 18px 14px;}
-  .kbn-scroll{padding:18px 18px calc(108px + env(safe-area-inset-bottom));}
+  .kbn-scroll{padding:18px 18px calc(152px + env(safe-area-inset-bottom));}
   .kbn-sec{margin-top:26px;}
   .kbn-row{padding:13px 15px;}
+  .kbn-member-row{padding:14px 16px;}
+  .kbn-member-row .kbn-rowend{width:96px;min-width:96px;}
+  button.kbn-fab{right:18px;bottom:74px;}
   .kbn-sheet{position:fixed;top:0;border-radius:0;}
   .kbn-sheethead{padding:calc(12px + env(safe-area-inset-top)) 18px 14px;}
   .kbn-sheetbody{padding:18px;}
@@ -273,6 +282,7 @@ button.kbn-row:hover{background:var(--card-2);}
   .kbn-bar{padding-left:16px;padding-right:16px;}
   .kbn-scroll,.kbn-sheetbody{padding-left:16px;padding-right:16px;}
   .kbn-2{grid-template-columns:1fr;gap:0;}
+  .kbn-member-row .kbn-rowend{width:88px;min-width:88px;}
 }
 @media (prefers-reduced-motion:reduce){.kbn *{animation:none !important;transition:none !important;}}
 `;
@@ -945,6 +955,7 @@ function Overview({ ctx }) {
   const prevKey = idx > 0 ? data.months[idx - 1].key : null;
   const expected = prevKey ? sum(data.income.filter((x) => x.month === prevKey && x.recurring)) : 0;
   const top = [...m.rows].sort((a, b) => b.p - a.p).slice(0, 4);
+  const recent = feed(data, key).slice(0, 5);
 
   return (
     <>
@@ -1029,8 +1040,8 @@ function Overview({ ctx }) {
             const saved = sum(data.goals.filter((g) => g.forChild).map(goalSaved), null);
             const spentOn = sum(m.rows.filter((r) => r.forChild).map((r) => r.spent), null);
             return (
-              <button className="kbn-row" key={p.id} onClick={() => A.subgoto("people")}>
-                <Avatar id={p.id} />
+              <button className="kbn-row kbn-member-row" key={p.id} onClick={() => A.subgoto("people")}>
+                <Avatar id={p.id} size={36} />
                 <div className="kbn-rowmain">
                   <div className="kbn-t">{p.name}</div>
                   <div className="kbn-m">{kid ? `${peso(saved)} saved for Ana` : `Earned ${peso(s.income)} · used ${peso(s.personal + s.shared + s.savings + s.funds)}`}</div>
@@ -1050,9 +1061,16 @@ function Overview({ ctx }) {
           <div className="kbn-eyebrow">Recent activity</div>
           <button className="kbn-more" onClick={() => A.goto("activity")}>See all <Ic n="right" s={12} /></button>
         </div>
-        <div className="kbn-list">
-          {feed(data, key).slice(0, 5).map((r, i) => <FeedRow key={i} r={r} />)}
-        </div>
+        {recent.length > 0 ? (
+          <div className="kbn-list">
+            {recent.map((r, i) => <FeedRow key={i} r={r} />)}
+          </div>
+        ) : (
+          <div className="kbn-card kbn-activity-empty">
+            <div className="kbn-t">No activity yet</div>
+            <div className="kbn-m" style={{ marginTop: 4 }}>New income and purchases will appear here.</div>
+          </div>
+        )}
       </section>
     </>
   );
