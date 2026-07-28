@@ -24,6 +24,7 @@ const CSS = `
   --hair:#E1E6EA; --hair-2:#EDF1F4;
   --brand:#16324B; --brand-2:#234F6E; --brand-tint:#E9EFF4;
   --d1:#16324B; --d2:#3C6E92; --d3:#88ABC3; --d4:#D9E0E6;
+  --gold:#D9A441; --balance-saved:#7FB3D5; --sidebar:#132B40;
   --pos:#0F6B4A; --pos-bg:#E7F2ED;
   --warn:#8A5E08; --warn-bg:#FAF0DB;
   --neg:#A3271D; --neg-bg:#F9E8E6;
@@ -62,6 +63,8 @@ const CSS = `
 .kbn-note b{color:var(--ink-2);font-weight:600;}
 .kbn-sidebrand{display:none;}
 .kbn-tabletbrand{display:none;}
+.kbn-sideclose,.kbn-desktop-only,.kbn-member-meter{display:none;}
+.kbn-mobile-only{display:initial;}
 
 /* ---------- device ---------- */
 .kbn-device{
@@ -307,44 +310,84 @@ button.kbn-member-row{min-height:72px;padding:16px 20px;}
     max-width:none;height:100dvh;min-height:720px;border:0;border-radius:0;box-shadow:none;
   }
   .kbn-sidebrand{
-    position:absolute;z-index:3;left:0;top:0;width:112px;height:96px;display:flex;
-    flex-direction:column;align-items:center;justify-content:center;gap:7px;
-    border-right:1px solid var(--hair);background:var(--card);
+    position:absolute;z-index:3;left:0;top:0;width:132px;height:76px;display:flex;
+    flex-direction:row;align-items:center;justify-content:flex-start;gap:9px;padding:0 16px;
+    border:0;background:var(--sidebar);color:#fff;
   }
-  .kbn-sidebrand .kbn-mark{width:34px;height:34px;border-radius:9px;}
+  .kbn-sidebrand .kbn-mark{width:28px;height:28px;border-radius:7px;background:var(--gold);}
+  .kbn-sidebrand .kbn-mark::before,.kbn-sidebrand .kbn-mark::after{display:none;}
   .kbn-sidebrand .kbn-word{font-size:16px;}
-  .kbn-bar{margin-left:112px;padding:18px 36px 16px;min-height:76px;}
-  .kbn-scroll{margin-left:112px;padding:32px 36px 120px;}
+  .kbn-bar{margin-left:132px;padding:16px 32px 14px;min-height:76px;}
+  .kbn-scroll{margin-left:132px;padding:28px 32px 100px;}
   .kbn-tabs{
-    top:96px;bottom:0;left:0;right:auto;width:112px;display:flex;flex-direction:column;
-    justify-content:flex-start;gap:8px;padding:22px 12px;border-top:0;border-right:1px solid var(--hair);
-    background:var(--card);
+    top:76px;bottom:0;left:0;right:auto;width:132px;display:flex;flex-direction:column;
+    justify-content:flex-start;gap:4px;padding:14px 12px 110px;border:0;background:var(--sidebar);
   }
-  .kbn-tab{
-    width:100%;min-height:64px;padding:10px 4px;border-radius:12px;justify-content:center;
-    color:var(--ink-3);
+  button.kbn-tab{
+    width:100%;min-height:44px;padding:8px 10px;border-radius:9px;justify-content:flex-start;
+    flex-direction:row;gap:10px;color:rgba(255,255,255,.6);
   }
-  .kbn-tab:hover{background:var(--card-2);color:var(--brand);}
-  .kbn-tab[data-on="1"]{background:var(--brand-tint);}
-  .kbn-tab span{font-size:10.5px;}
-  button.kbn-fab{right:32px;bottom:28px;height:50px;padding:0 20px;}
+  button.kbn-tab:hover{background:rgba(255,255,255,.08);color:#fff;}
+  button.kbn-tab[data-on="1"]{background:rgba(255,255,255,.12);color:#fff;}
+  .kbn-tab span{font-size:12px;}
+  button.kbn-fab{display:none;}
+  button.kbn-sideclose{
+    display:block;position:absolute;z-index:4;left:12px;bottom:18px;width:108px;padding:10px 12px;
+    border-radius:9px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.58);font-size:11px;text-align:left;
+  }
+  .kbn-sideclose b{display:block;color:var(--gold);font-weight:600;margin-top:3px;}
+  .kbn-desktop-only{display:flex;}
+  button.kbn-bar .kbn-btn,button.kbn-desktop-only.kbn-btn{background:var(--sidebar);color:#fff;border:0;}
+  button.kbn-monthbtn{background:var(--card-2);border:1px solid var(--hair);}
   .kbn-overview{
-    display:grid;grid-template-columns:minmax(0,1.2fr) minmax(340px,.8fr);
-    gap:28px;align-items:start;max-width:1480px;margin:0 auto;
+    display:grid;grid-template-columns:minmax(0,1.45fr) minmax(320px,1fr);
+    gap:14px;align-items:stretch;max-width:1480px;margin:0 auto;
   }
   .kbn-overview > .kbn-sec{margin-top:0;}
-  .kbn-overview-balance{grid-column:1;grid-row:1 / span 2;}
-  .kbn-overview-guide{grid-column:2;grid-row:1 / span 2;align-self:stretch;}
-  .kbn-overview-notice{grid-column:2;margin-top:0 !important;}
-  .kbn-overview-alerts{grid-column:2;}
-  .kbn-overview-budgets{grid-column:1;}
-  .kbn-overview-members{grid-column:2;}
+  .kbn-overview-balance{grid-column:1;grid-row:1;background:var(--sidebar);border-color:var(--sidebar);color:#fff;padding:24px;}
+  .kbn-overview-balance .kbn-eyebrow,.kbn-overview-balance .kbn-m{color:rgba(255,255,255,.58);}
+  .kbn-overview-balance > .kbn-n{font-size:38px !important;}
+  .kbn-overview-balance .kbn-act{color:#fff;}
+  .kbn-overview-balance .kbn-meter{height:9px;background:rgba(255,255,255,.18);}
+  .kbn-overview-balance .kbn-meter span:nth-child(1){background:#fff !important;}
+  .kbn-overview-balance .kbn-meter span:nth-child(2){background:var(--balance-saved) !important;}
+  .kbn-overview-balance .kbn-meter span:nth-child(3){background:var(--gold) !important;}
+  .kbn-overview-balance .kbn-meter span:nth-child(4){background:rgba(255,255,255,.18) !important;}
+  .kbn-overview-balance .kbn-legend{display:flex;flex-wrap:wrap;gap:18px;background:none;margin-top:14px;}
+  .kbn-overview-balance .kbn-leg{background:none;padding:0;}
+  .kbn-overview-balance .kbn-legname{color:rgba(255,255,255,.62);}
+  .kbn-overview-balance .kbn-legval{color:#fff;font-size:14px;}
+  .kbn-overview-balance .kbn-legpct{display:none;}
+  .kbn-overview-balance .kbn-leg:nth-child(1) .kbn-sw{background:#fff !important;}
+  .kbn-overview-balance .kbn-leg:nth-child(2) .kbn-sw{background:var(--balance-saved) !important;}
+  .kbn-overview-balance .kbn-leg:nth-child(3) .kbn-sw{background:var(--gold) !important;}
+  .kbn-overview-balance .kbn-leg:nth-child(4){display:none;}
+  .kbn-overview-guide{grid-column:2;grid-row:1;align-self:stretch;}
+  .kbn-overview-status{grid-column:2;grid-row:1;flex-direction:column;gap:10px;}
+  .kbn-overview-notice,.kbn-overview-alerts{display:none;}
+  .kbn-overview-budgets{grid-column:1;grid-row:2;}
+  .kbn-overview-members{grid-column:2;grid-row:2;}
   .kbn-overview-activity{grid-column:1 / -1;}
+  .kbn-overview-budgets,.kbn-overview-members{background:var(--card);border:1px solid var(--hair);border-radius:12px;padding:18px;}
+  .kbn-overview-budgets .kbn-list,.kbn-overview-members .kbn-list{border:0;border-radius:0;}
+  .kbn-overview-budgets button.kbn-row{padding:8px 0;min-height:0;border:0;}
+  .kbn-overview-budgets .kbn-tag{display:none;}
+  .kbn-overview-budgets .kbn-rowend{width:150px !important;}
+  .kbn-overview-members button.kbn-row{padding:9px 0;min-height:0;border:0;}
+  .kbn-member-meter{display:flex;height:5px;border-radius:3px;overflow:hidden;margin-top:7px;background:var(--card-3);}
+  .kbn-mobile-only{display:none !important;}
+  .kbn-empty-balance{display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:150px;}
+  .kbn-empty-balance .kbn-btn{width:auto;min-width:130px;}
+  .kbn-empty-balance button.kbn-btn{background:var(--card);color:var(--sidebar);}
+  .kbn-overview-budgets > .kbn-card{border:0;}
+  button.kbn-close-card{border:1px solid var(--hair);border-radius:12px;padding:14px;background:var(--card);text-align:left;}
+  .kbn-close-card b{display:block;font:600 20px/1.2 var(--disp);margin-top:3px;}
+  .kbn-close-card span{display:block;color:var(--gold);font-weight:600;margin-top:6px;}
   .kbn-pad{padding:20px;}
   .kbn-row,button.kbn-row{padding:16px 20px;}
   button.kbn-member-row{padding:18px 22px;}
   .kbn-member-row .kbn-rowend{width:128px;min-width:128px;}
-  .kbn-sheet{left:136px;right:24px;top:24px;border-radius:20px 20px 0 0;}
+  .kbn-sheet{left:156px;right:24px;top:24px;border-radius:20px 20px 0 0;}
   .kbn-sheethead{padding:14px 24px 17px;}
   .kbn-sheetbody{padding:24px;}
   .kbn-sheetfoot{padding:16px 24px;}
@@ -1013,6 +1056,8 @@ function Kaban({ boot, onWipe, onSignOut }) {
                 {monthShort(key)} {key.slice(0, 4)} <Ic n="down" s={13} />
               </button>
               <button className="kbn-iconbtn" disabled={idx === data.months.length - 1} onClick={() => setMi(idx + 1)} aria-label="Next month"><Ic n="right" s={15} /></button>
+              <button className="kbn-btn kbn-desktop-only" style={{ width: "auto", minHeight: 36, padding: "0 14px" }}
+                disabled={locked} onClick={() => setSheet({ type: "add" })}>Add</button>
             </div>
           </header>
 
@@ -1037,6 +1082,11 @@ function Kaban({ boot, onWipe, onSignOut }) {
               </button>
             ))}
           </nav>
+          <button className="kbn-sideclose" disabled={locked}
+            onClick={() => locked ? null : setSheet({ type: "review" })}>
+            {locked ? "Month closed" : (daysIn(key) - Number(TODAY.slice(8, 10))) + " days left"}
+            <b>{locked ? monthShort(key) + " is read only" : "Close " + monthShort(key)}</b>
+          </button>
 
           {toast && (
             <div className="kbn-toast" role="status">
@@ -1079,14 +1129,29 @@ function Overview({ ctx }) {
   return (
     <div className="kbn-overview">
       <section className="kbn-card kbn-pad kbn-overview-balance">
-        <div className="kbn-eyebrow">Available balance</div>
-        <div className="kbn-n" style={{ fontSize: 34, marginTop: 3, lineHeight: 1.1 }}>{peso(m.available)}</div>
-        <div className="kbn-m" style={{ marginTop: 3 }}>
-          of {peso(m.totalIncome)} that came in during {monthLong(key)}
-        </div>
-        <div style={{ marginTop: 16 }}><Meter parts={parts} /></div>
-        <Legend parts={parts} total={m.totalIncome} />
-        <button className="kbn-act" onClick={() => setSheet({ type: "formula" })}>How this is worked out <Ic n="arrow" s={13} /></button>
+        {gettingStarted ? (
+          <div className="kbn-empty-balance">
+            <div>
+              <div className="kbn-eyebrow">Available balance</div>
+              <div className="kbn-t" style={{ fontSize: 24, marginTop: 9, color: "var(--card)" }}>
+                Nothing recorded for {MN[Number(key.slice(5, 7)) - 1]} yet
+              </div>
+              <div className="kbn-m" style={{ marginTop: 7 }}>Start with money received this month.</div>
+            </div>
+            <button className="kbn-btn" onClick={() => setSheet({ type: "add", pick: "income" })}>Add income</button>
+          </div>
+        ) : (
+          <>
+            <div className="kbn-eyebrow">Available balance</div>
+            <div className="kbn-n" style={{ fontSize: 34, marginTop: 3, lineHeight: 1.1 }}>{peso(m.available)}</div>
+            <div className="kbn-m" style={{ marginTop: 3 }}>
+              of {peso(m.totalIncome)} that came in during {monthLong(key)}
+            </div>
+            <div style={{ marginTop: 16 }}><Meter parts={parts} /></div>
+            <Legend parts={parts} total={m.totalIncome} />
+            <button className="kbn-act" onClick={() => setSheet({ type: "formula" })}>How this is worked out <Ic n="arrow" s={13} /></button>
+          </>
+        )}
       </section>
 
       {gettingStarted && (
@@ -1126,6 +1191,27 @@ function Overview({ ctx }) {
         </section>
       )}
 
+      {!gettingStarted && (
+        <section className="kbn-overview-status kbn-desktop-only">
+          {alerts.map((b) => (
+            <button key={b.id} style={{ textAlign: "left" }} onClick={() => setSheet({ type: "budget", id: b.id })}>
+              <Notice tone={b.p > 1 ? "neg" : "warn"} icon="alert"
+                title={b.p > 1 ? `${b.name} is ${peso(-b.remaining)} over` : `${b.name} is ${pct(b.p)} used`}
+                body={b.p > 1
+                  ? `${peso(b.spent)} spent of ${peso(b.pool)}`
+                  : `${peso(b.remaining)} left · ${Math.max(0, daysIn(key) - Number(TODAY.slice(8, 10)))} days to go`} />
+            </button>
+          ))}
+          {m.rows.length > 0 && (
+            <button className="kbn-close-card" onClick={() => locked ? null : setSheet({ type: "review" })}>
+              <div className="kbn-m">Unspent in budgets</div>
+              <b>{peso(m.unspentInBudgets)}</b>
+              <span>{locked ? "Month closed" : "Decide where it goes →"}</span>
+            </button>
+          )}
+        </section>
+      )}
+
       {m.income.length === 0 && expected > 0 && (
         <div className="kbn-overview-notice" style={{ marginTop: 14 }}>
           <Notice tone="info" icon="calendar" title="Recurring income scheduled"
@@ -1158,7 +1244,11 @@ function Overview({ ctx }) {
       <section className="kbn-sec kbn-overview-budgets">
         <div className="kbn-sechead">
           <div className="kbn-eyebrow">Budgets</div>
-          <button className="kbn-more" onClick={() => A.goto("budgets")}>All {m.rows.length} <Ic n="right" s={12} /></button>
+          <button className="kbn-more" onClick={() => A.goto("budgets")}>
+            <span className="kbn-mobile-only">All {m.rows.length} </span>
+            <span className="kbn-desktop-only">{m.rows.length ? `${m.rows.length} total · ${peso(m.totalSpent)} spent` : "Start here"}</span>
+            <Ic n="right" s={12} />
+          </button>
         </div>
         {m.rows.length === 0 ? (
           <div className="kbn-card"><Empty title="No budgets set for this month"
@@ -1175,8 +1265,14 @@ function Overview({ ctx }) {
                   <Track p={b.p} pace={b.pace} />
                 </div>
                 <div className="kbn-rowend" style={{ width: 92 }}>
-                  <div className="kbn-n" style={{ fontSize: 14 }}>{peso(b.remaining)}</div>
-                  <div className="kbn-m">left of {pesoK(b.pool)}</div>
+                  <div className="kbn-mobile-only">
+                    <div className="kbn-n" style={{ fontSize: 14 }}>{peso(b.remaining)}</div>
+                    <div className="kbn-m">left of {pesoK(b.pool)}</div>
+                  </div>
+                  <div className="kbn-desktop-only" style={{ justifyContent: "flex-end" }}>
+                    <span className="kbn-n" style={{ fontSize: 13, color: b.p > 1 ? "var(--neg)" : "inherit" }}>{peso(b.spent)}</span>
+                    <span className="kbn-m">&nbsp;/ {peso(b.pool)}</span>
+                  </div>
                 </div>
               </button>
             ))}
@@ -1195,12 +1291,19 @@ function Overview({ ctx }) {
             const kid = p.kind === "child";
             const saved = sum(data.goals.filter((g) => g.forChild).map(goalSaved), null);
             const spentOn = sum(m.rows.filter((r) => r.forChild).map((r) => r.spent), null);
+            const used = s.personal + s.shared;
+            const base = Math.max(1, s.income);
             return (
               <button className="kbn-row kbn-member-row" key={p.id} onClick={() => A.subgoto("people")}>
                 <Avatar id={p.id} size={36} />
                 <div className="kbn-rowmain">
                   <div className="kbn-t">{p.name}</div>
                   <div className="kbn-m">{kid ? `${peso(saved)} saved for Ana` : `Earned ${peso(s.income)} · used ${peso(s.personal + s.shared + s.savings + s.funds)}`}</div>
+                  {!kid && s.income > 0 && <div className="kbn-member-meter">
+                    <span style={{ width: Math.min(100, used / base * 100) + "%", background: "var(--sidebar)" }} />
+                    <span style={{ width: Math.min(100, s.savings / base * 100) + "%", background: "var(--balance-saved)" }} />
+                    <span style={{ width: Math.min(100, s.funds / base * 100) + "%", background: "var(--gold)" }} />
+                  </div>}
                 </div>
                 <div className="kbn-rowend">
                   <div className="kbn-n" style={{ fontSize: 14 }}>{kid ? peso(spentOn) : peso(s.remaining)}</div>
