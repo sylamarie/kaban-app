@@ -214,6 +214,10 @@ button.kbn-member-row{min-height:72px;padding:16px 20px;}
 .kbn-btn[disabled]{background:var(--card-3);color:var(--ink-4);cursor:default;}
 .kbn-btn.ghost{background:var(--card);border:1px solid var(--hair);color:var(--ink);}
 .kbn-btn.ghost:hover{background:var(--card-2);}
+.kbn-google{
+  width:19px;height:19px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;
+  background:#fff;border:1px solid var(--hair);font:700 12px/1 var(--sans);color:#4285F4;
+}
 .kbn-authintro{padding:26px 22px 20px;text-align:center;border-bottom:1px solid var(--hair-2);}
 .kbn-authintro .kbn-mark{margin:0 auto 14px;width:42px;height:42px;border-radius:11px;}
 .kbn-authintro h1{font:700 24px/1.2 var(--disp);letter-spacing:-.025em;margin:0;}
@@ -2401,6 +2405,14 @@ const SB = {
     });
     if (error) throw error;
   },
+  async signInGoogle() {
+    if (!this.client) throw new Error("Not connected");
+    const { error } = await this.client.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: window.location.origin + window.location.pathname },
+    });
+    if (error) throw error;
+  },
   async signOut() {
     if (this.client) {
       const { error } = await this.client.auth.signOut({ scope: "local" });
@@ -2668,6 +2680,12 @@ function SettingsSheet({ ctx }) {
             </div>
           ) : (
             <div style={{ marginTop: 16 }}>
+              <button className="kbn-btn ghost" disabled={busy || !SB.client} onClick={async () => {
+                setBusy(true);
+                try { await SB.signInGoogle(); }
+                catch (e) { setStatus("err:" + e.message); setBusy(false); }
+              }}><span className="kbn-google">G</span> Continue with Google</button>
+              <div className="kbn-authdivider">or use email</div>
               <Field label="Sign in or create an account" hint="We email you a secure link. Open it on this device—no password needed.">
                 <input className="kbn-in" type="email" value={email} placeholder="you@example.com"
                   onChange={(e) => setEmail(e.target.value)} />
@@ -2750,6 +2768,11 @@ function AccountStart({ onOffline }) {
     } catch (e) { setStatus("err:" + e.message); }
     setBusy(false);
   };
+  const google = async () => {
+    setBusy(true); setStatus("");
+    try { await SB.signInGoogle(); }
+    catch (e) { setStatus("err:" + e.message); setBusy(false); }
+  };
   return (
     <div className="kbn">
       <style>{CSS}</style>
@@ -2765,6 +2788,10 @@ function AccountStart({ onOffline }) {
             <p>Sign in with your email to securely save and restore your household budget on your phone, tablet, or computer.</p>
           </div>
           <main className="kbn-authbody">
+            <button className="kbn-btn ghost" disabled={busy} onClick={google}>
+              <span className="kbn-google">G</span> Continue with Google
+            </button>
+            <div className="kbn-authdivider">or use email</div>
             <Field label="Email address">
               <input className="kbn-in" type="email" autoComplete="email" value={email}
                 placeholder="you@example.com" onChange={(e) => setEmail(e.target.value)}
@@ -2776,7 +2803,7 @@ function AccountStart({ onOffline }) {
             {status === "sent" && <div style={{ marginTop: 14 }}><Notice icon="check" title="Check your email"
               body="Open the link we sent on this device. Kaban will sign you in and restore your saved records." /></div>}
             {status.indexOf("err:") === 0 && <div style={{ marginTop: 14 }}><Notice tone="neg" body={status.slice(4)} /></div>}
-            <div className="kbn-authdivider">or</div>
+            <div className="kbn-authdivider">or stay offline</div>
             <button className="kbn-btn ghost" onClick={onOffline}>Continue on this device only</button>
             <div className="kbn-m" style={{ marginTop: 10, textAlign: "center", lineHeight: 1.6 }}>
               You can sign in later from the account button. No password is required.
