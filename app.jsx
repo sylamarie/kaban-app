@@ -349,7 +349,7 @@ button.kbn-member-row{min-height:72px;padding:16px 20px;}
   .kbn-authintro{
     display:flex;flex-direction:column;align-items:flex-start;justify-content:center;text-align:left;
     padding:64px;border-bottom:0;border-right:1px solid var(--hair);
-    background:linear-gradient(145deg,var(--brand-tint),var(--card)); 
+    background:linear-gradient(145deg,var(--brand-tint),var(--card));
   }
   .kbn-authintro .kbn-mark{margin:0 0 24px;width:52px;height:52px;border-radius:13px;}
   .kbn-authintro h1{font-size:34px;max-width:360px;}
