@@ -2214,7 +2214,10 @@ function clearLocal() {
 function readCfg() {
   try {
     const saved = JSON.parse(localStorage.getItem(CFG_KEY) || "null");
-    return saved || CLOUD_DEFAULT;
+    return {
+      url: saved && saved.url ? saved.url : CLOUD_DEFAULT.url,
+      key: saved && saved.key ? saved.key : CLOUD_DEFAULT.key,
+    };
   } catch (e) { return CLOUD_DEFAULT; }
 }
 function writeCfg(cfg) {

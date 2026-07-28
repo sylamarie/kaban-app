@@ -1,6 +1,6 @@
 /* Kaban offline cache.
    Bump CACHE when you change index.html so devices pick up the new version. */
-const CACHE = "kaban-v6";
+const CACHE = "kaban-v7";
 const CORE = [
   "./", "./index.html", "./app.jsx", "./manifest.webmanifest", "./icon-180.png", "./icon-512.png",
   "https://unpkg.com/react@18/umd/react.production.min.js",
