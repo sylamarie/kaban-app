@@ -334,6 +334,7 @@ button.kbn-member-row{min-height:72px;padding:16px 20px;}
   }
   .kbn-overview > .kbn-sec{margin-top:0;}
   .kbn-overview-balance{grid-column:1;grid-row:1 / span 2;}
+  .kbn-overview-guide{grid-column:2;grid-row:1 / span 2;align-self:stretch;}
   .kbn-overview-notice{grid-column:2;margin-top:0 !important;}
   .kbn-overview-alerts{grid-column:2;}
   .kbn-overview-budgets{grid-column:1;}
@@ -1073,6 +1074,7 @@ function Overview({ ctx }) {
   const expected = prevKey ? sum(data.income.filter((x) => x.month === prevKey && x.recurring)) : 0;
   const top = [...m.rows].sort((a, b) => b.p - a.p).slice(0, 4);
   const recent = feed(data, key).slice(0, 5);
+  const gettingStarted = m.totalIncome === 0 && m.rows.length === 0 && recent.length === 0;
 
   return (
     <div className="kbn-overview">
@@ -1086,6 +1088,43 @@ function Overview({ ctx }) {
         <Legend parts={parts} total={m.totalIncome} />
         <button className="kbn-act" onClick={() => setSheet({ type: "formula" })}>How this is worked out <Ic n="arrow" s={13} /></button>
       </section>
+
+      {gettingStarted && (
+        <section className="kbn-card kbn-pad kbn-sec kbn-overview-guide">
+          <div className="kbn-eyebrow">Getting started</div>
+          <div className="kbn-t" style={{ fontSize: 18, marginTop: 8 }}>Build your first monthly plan</div>
+          <div className="kbn-s" style={{ marginTop: 5 }}>
+            Add what came in, decide spending limits, then record purchases as they happen.
+          </div>
+          <div className="kbn-list" style={{ marginTop: 18 }}>
+            <button className="kbn-row" onClick={() => setSheet({ type: "add", pick: "income" })}>
+              <span className="kbn-glyph"><span className="kbn-n">1</span></span>
+              <div className="kbn-rowmain">
+                <div className="kbn-t">Add income</div>
+                <div className="kbn-m">Record salary or other money received</div>
+              </div>
+              <Ic n="right" s={15} style={{ color: "var(--ink-4)" }} />
+            </button>
+            <button className="kbn-row" onClick={() => setSheet({ type: "add", pick: "budget" })}>
+              <span className="kbn-glyph"><span className="kbn-n">2</span></span>
+              <div className="kbn-rowmain">
+                <div className="kbn-t">Create a budget</div>
+                <div className="kbn-m">Set a limit for groceries, bills, or transport</div>
+              </div>
+              <Ic n="right" s={15} style={{ color: "var(--ink-4)" }} />
+            </button>
+            <button className="kbn-row" onClick={() => setSheet({ type: "add", pick: "expense" })}>
+              <span className="kbn-glyph"><span className="kbn-n">3</span></span>
+              <div className="kbn-rowmain">
+                <div className="kbn-t">Record purchases</div>
+                <div className="kbn-m">Track spending against each budget</div>
+              </div>
+              <Ic n="right" s={15} style={{ color: "var(--ink-4)" }} />
+            </button>
+          </div>
+          <Notice icon="shield" body="Kaban saves on this device immediately and syncs automatically while you are signed in." />
+        </section>
+      )}
 
       {m.income.length === 0 && expected > 0 && (
         <div className="kbn-overview-notice" style={{ marginTop: 14 }}>
