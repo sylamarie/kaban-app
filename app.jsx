@@ -2185,6 +2185,10 @@ function ReviewSheet({ ctx }) {
 
 const STORE_KEY = "kaban.state.v1";
 const CFG_KEY = "kaban.cloud.v1";
+const CLOUD_DEFAULT = {
+  url: "https://kymxgnwkxvrbwwyyyfgd.supabase.co",
+  key: "sb_publishable_kSyCs_fspG-kgBgU8i5p-Q_zf0xp4YA",
+};
 const PALETTE = ["#16324B", "#3C6E92", "#265A7D", "#88ABC3", "#5B8CAE", "#6E8CA0"];
 const initialsOf = (n) => (n || "").trim().split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase() || "?";
 const adults = () => PEOPLE.filter((p) => p.kind === "adult");
@@ -2208,7 +2212,10 @@ function clearLocal() {
   try { localStorage.removeItem(STORE_KEY); } catch (e) {}
 }
 function readCfg() {
-  try { return JSON.parse(localStorage.getItem(CFG_KEY) || "null"); } catch (e) { return null; }
+  try {
+    const saved = JSON.parse(localStorage.getItem(CFG_KEY) || "null");
+    return saved || CLOUD_DEFAULT;
+  } catch (e) { return CLOUD_DEFAULT; }
 }
 function writeCfg(cfg) {
   try { cfg ? localStorage.setItem(CFG_KEY, JSON.stringify(cfg)) : localStorage.removeItem(CFG_KEY); } catch (e) {}

@@ -84,6 +84,11 @@ That file is also how you move to a new device, and your way out if you ever lea
 
 ## Cloud sync (optional)
 
+This copy of Kaban is preconfigured with the project's public Supabase URL and
+publishable key. These identify the backend but cannot bypass row level
+security. Each household member still has to sign in before cloud data can be
+read or written.
+
 Only worth it if you want the same records on an iPad *and* a phone, or another family member entering expenses. One device is fine without it.
 
 ### Set it up
